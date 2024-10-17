@@ -18,7 +18,9 @@ function showRandomQuote(){
     // access the random quote using the index generated
     const randomQuote = quoteVariable[randomIndex];
     // Display the random quote at the user interface of the application
-    quoteDisplay.innerHTML = `"${randomQuote.text}" - ${randomQuote.category}`;
+    const newElement = document.createElement('p');
+    newElement.innerHTML= `"${randomQuote.text}" - ${randomQuote.category}`;
+    quoteDisplay.appendChild(newElement);
 
 }
 // Implement createAddQuoteForm function
@@ -29,12 +31,17 @@ function createAddQuoteForm(){
 //Implement addQuote function
 function addQuote(){
     // new quote variable to store new quotes and variables
-    const newQuote = {
-        text: newQuoteText.value,
-        category: newQuoteCategory.value
-    };
-    // push the newquote to the quotevariable
-    quoteVariable.push(newQuote);
+    const quoteText = newQuoteText.value;
+    const quoteCategory = newQuoteCategory.value
+    // add the logic and push the quotetext and quoteCategory to the quotevariable
+    if(quoteText !=='' && quoteCategory !==''){
+        quoteVariable.push({text:quoteText, category: quoteCategory})
+        alert("Quote added succesfully")
+    } else{
+        alert("Please fill in both fields")
+    }
+    
+    
     // display the newly added quote
     showRandomQuote();
     addQuoteForm.style.display = 'none';
