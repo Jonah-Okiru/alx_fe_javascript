@@ -18,7 +18,7 @@ function showRandomQuote(){
     // access the random quote using the index generated
     const randomQuote = quoteVariable[randomIndex];
     // Display the random quote at the user interface of the application
-    quoteDisplay.textContent = `"${randomQuote.text}" - ${randomQuote.category}`;
+    quoteDisplay.innerHTML = `"${randomQuote.text}" - ${randomQuote.category}`;
 
 }
 // Implement createAddQuoteForm function
