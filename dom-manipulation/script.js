@@ -4,13 +4,14 @@ const newQuote = document.getElementById('newQuote');
 const addQuoteForm = document.getElementById('ddQuoteForm');
 const newQuoteText = document.getElementById('newQuoteText');
 const newQuoteCategory = document.getElementById('newQuoteCategory');
+const importFile = document.getElementById('importFile');
 // declare a quote variable to store quotes and categories
-const quoteVariable =[
-    {text: "The only way to succeed in life is to do what you love", category: "Inspirational"},
-    {text: "Success is by chance", category: "educative"},
-    {text: "All that glitters sometimes fails", category: "Educational"}
-
-]
+let quoteVariable =[];
+//loading quotes from local storage  on initialization
+const storedQuotes = localStorage.getItem('quoteVariable');
+if(storedQuotes){
+    quoteVariable = JSON.parse(storedQuotes);
+}
 // Implement the Random quote function
 function showRandomQuote(){
     // generate the random index of the array element
@@ -41,10 +42,45 @@ function addQuote(){
         alert("Please fill in both fields")
     }
     
-    
+    // save quotes to local storage
+    saveQuotes()
     // display the newly added quote
     showRandomQuote();
     addQuoteForm.style.display = 'none';
 }
-// Add eventlistener to the new quote button
+// function to save quotes to local storage
+function saveQuotes(){
+    localStorage.setItem('quoteVariable', JSON.stringify(quoteVariable));
+}
+// Implement JSON export
+function exportJson(){
+    const JsonData = JSON.stringify(quoteVariable);
+    const Blob = new Blob([JsonData], {type: 'application/json'});
+    const url = URL.createObjectURL(Blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'quoteVariable.json';
+    link.click();
+    URL.revokeObjectURL(url);
+}
+// Implement Json import
+function importFromJsonFile(event){
+    const fileReader = new FileReader();
+    fileReader.onload = function(event){
+        const importedQuotes = JSON.parse(event.target.result);
+        quoteVariable.push(...importedQuotes);
+        saveQuotes();
+        alert('Quotes imported successfully!');
+    };
+    fileReader.readAsText(event.target.files[0]);
+}
+// Add eventlisteners 
 newQuote.addEventListener('click',showRandomQuote);
+addQuoteForm.addEventListener('submit', function(event){
+    event.preventDefault();
+    addQuote();
+});
+importFile.addEventListener('change',importFromJsonFile);
+// show intial quote
+showRandomQuote();
+
