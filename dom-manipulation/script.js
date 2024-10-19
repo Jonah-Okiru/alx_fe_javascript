@@ -109,8 +109,8 @@ async function fetchQuotesFromServer(newQuote=null) {
         })).concat(quoteVariable);
         // handle conflicts (server takes precedence)
         if(newQuote){
-            // if a new quote is added post it to the server
-            await postQuoteToServer(newQuote);
+            // if a new quote is added post it to the server(sync)
+            await syncQuotes(newQuote);
         }
         saveQuotes();
         populateCategories();
@@ -119,8 +119,8 @@ async function fetchQuotesFromServer(newQuote=null) {
         console.error('Error syncing with the server:', error);
     }   
 }
-// Function to post a new quote to the server
-async function postQuoteToServer(quote) {
+// Function to post a new quote to the server(sync the server with new posts)
+async function syncQuotes(quote) {
     try {
         const response = await fetch(serverUrl, {
             method: 'POST',
