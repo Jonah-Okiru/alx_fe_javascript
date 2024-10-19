@@ -109,7 +109,8 @@ async function fetchQuotesFromServer(newQuote=null) {
         })).concat(quoteVariable);
         // handle conflicts (server takes precedence)
         if(newQuote){
-            quoteVariable.push(newQuote); // add new local quote to the array
+            // if a new quote is added post it to the server
+            await postQuoteToServer(newQuote);
         }
         saveQuotes();
         populateCategories();
@@ -117,6 +118,30 @@ async function fetchQuotesFromServer(newQuote=null) {
     }catch(error){
         console.error('Error syncing with the server:', error);
     }   
+}
+// Function to post a new quote to the server
+async function postQuoteToServer(quote) {
+    try {
+        const response = await fetch(serverUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title: quote.text, // Send the quote text
+                body: quote.category // Send the quote category
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to post new quote to the server');
+        }
+        const result = await response.json();
+        console.log('Quote posted to server:', result);
+
+    } catch (error) {
+        console.error('Error posting the quote:', error);
+    }
 }
 // Implement JSON export
 function exportJson(){
