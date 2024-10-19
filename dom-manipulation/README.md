@@ -32,7 +32,7 @@ Here, you'll enhance the quote generator by integrating local storage and JSON f
 ### 3. Creating a Dynamic Content Filtering System Using Web Storage and JSON.
 This task focuses on implementing a filtering system based on categories stored in web storage. Users can filter quotes and the last selected category is remembered.
 
-#### 4. Syncing Data with Server and Implementing Conflict Resolution. 
+### 4. Syncing Data with Server and Implementing Conflict Resolution. 
 This advanced task involves simulating server interaction and data syncing. Skills gained include;-
 - Set up a mock server interaction to receive updates.
 - Implement data syncing with conflict resolution strategies.
