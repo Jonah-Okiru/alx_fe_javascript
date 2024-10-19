@@ -8,6 +8,8 @@ const importFile = document.getElementById('importFile');
 const categoryFilter = document.getElementById('categoryFilter');
 // declare a quote variable to store quotes and categories
 let quoteVariable =[];
+// mock url API for server simulation
+const serverUrl = 'https://jsonplaceholder.typicode.com/posts';
 //loading quotes from local storage  on initialization
 const storedQuotes = localStorage.getItem('quoteVariable');
 if(storedQuotes){
@@ -86,10 +88,35 @@ function addQuote(){
     // display the newly added quote
     showRandomQuote();
     addQuoteForm.style.display = 'none';
+    // sync the addded quote with the server
+    syncWithServer({text: quoteText, category: quoteCategory})
+
 }
 // function to save quotes to local storage
 function saveQuotes(){
     localStorage.setItem('quoteVariable', JSON.stringify(quoteVariable));
+}
+// Function to sink data sync with the server.
+async function syncWithServer(newQuote=null) {
+    try{
+        // fetch existing quote from the server
+        const response = await fetch(serverUrl);
+        const serverQuotes = await response.json();
+        // merge server data with local data(server data take precedence)
+        quoteVariable = serverQuotes.map(quote=>({
+            text: quote.title, //Assuming 'title' for the quote text in the mock API
+            category: quote.body // Assuming 'body' for the quote category in the mock API
+        })).concat(quoteVariable);
+        // handle conflicts (server takes precedence)
+        if(newQuote){
+            quoteVariable.push(newQuote); // add new local quote to the array
+        }
+        saveQuotes();
+        populateCategories();
+        showRandomQuote();
+    }catch(error){
+        console.error('Error syncing with the server:', error);
+    }   
 }
 // Implement JSON export
 function exportJson(){
@@ -116,6 +143,8 @@ function importFromJsonFile(event){
     };
     fileReader.readAsText(event.target.files[0]);
 }
+// Periodically sync with server
+setInterval(syncWithServer, 60000); // sync every 60 seconds.
 // Add eventlisteners 
 newQuote.addEventListener('click',showRandomQuote);
 addQuoteForm.addEventListener('submit', function(event){
@@ -127,3 +156,5 @@ categoryFilter.addEventListener('change', showRandomQuote);
 // show intial quote and populate categories on page load
 populateCategories();
 showRandomQuote();
+// Initial sync with server on load.
+syncWithServer();
