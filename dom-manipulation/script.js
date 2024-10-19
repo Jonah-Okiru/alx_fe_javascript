@@ -138,6 +138,7 @@ async function syncQuotes(quote) {
         }
         const result = await response.json();
         console.log('Quote posted to server:', result);
+        alert("Quotes synced with server!");
 
     } catch (error) {
         console.error('Error posting the quote:', error);
