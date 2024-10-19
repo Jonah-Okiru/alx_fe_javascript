@@ -89,7 +89,7 @@ function addQuote(){
     showRandomQuote();
     addQuoteForm.style.display = 'none';
     // sync the addded quote with the server
-    syncWithServer({text: quoteText, category: quoteCategory})
+    fetchQuotesFromServer({text: quoteText, category: quoteCategory})
 
 }
 // function to save quotes to local storage
@@ -97,7 +97,7 @@ function saveQuotes(){
     localStorage.setItem('quoteVariable', JSON.stringify(quoteVariable));
 }
 // Function to sink data sync with the server.
-async function syncWithServer(newQuote=null) {
+async function fetchQuotesFromServer(newQuote=null) {
     try{
         // fetch existing quote from the server
         const response = await fetch(serverUrl);
@@ -144,7 +144,7 @@ function importFromJsonFile(event){
     fileReader.readAsText(event.target.files[0]);
 }
 // Periodically sync with server
-setInterval(syncWithServer, 60000); // sync every 60 seconds.
+setInterval(fetchQuotesFromServer, 60000); // sync every 60 seconds.
 // Add eventlisteners 
 newQuote.addEventListener('click',showRandomQuote);
 addQuoteForm.addEventListener('submit', function(event){
@@ -157,4 +157,4 @@ categoryFilter.addEventListener('change', showRandomQuote);
 populateCategories();
 showRandomQuote();
 // Initial sync with server on load.
-syncWithServer();
+fetchQuotesFromServer();
