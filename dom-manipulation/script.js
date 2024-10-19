@@ -5,6 +5,7 @@ const addQuoteForm = document.getElementById('ddQuoteForm');
 const newQuoteText = document.getElementById('newQuoteText');
 const newQuoteCategory = document.getElementById('newQuoteCategory');
 const importFile = document.getElementById('importFile');
+const categoryFilter = document.getElementById('categoryFilter');
 // declare a quote variable to store quotes and categories
 let quoteVariable =[];
 //loading quotes from local storage  on initialization
@@ -12,17 +13,53 @@ const storedQuotes = localStorage.getItem('quoteVariable');
 if(storedQuotes){
     quoteVariable = JSON.parse(storedQuotes);
 }
+// loading the last selected filter from a local storage.
+const storedFilter = localStorage.getItem('selectedCategory');
+if(storedFilter){
+    categoryFilter.value = storedFilter;
+}
 // Implement the Random quote function
 function showRandomQuote(){
-    // generate the random index of the array element
-    const randomIndex = Math.floor(Math.random()*quoteVariable.length);
-    // access the random quote using the index generated
-    const randomQuote = quoteVariable[randomIndex];
-    // Display the random quote at the user interface of the application
-    const newElement = document.createElement('p');
-    newElement.innerHTML= `"${randomQuote.text}" - ${randomQuote.category}`;
-    quoteDisplay.appendChild(newElement);
+    const filteredQuotes = filterQuotes();
+    if(filteredQuotes.length>0){
+        // Generate random index of the array element from filteredquotes
+        const randomIndex = Math.floor(Math.random()*filteredQuotes.length);
+        // access the random quote using the index generated
+        const randomQuote = filteredQuotes[randomIndex];
+        // clear previous quote and Display the random quote at the user interface of the application
+        quoteDisplay.innerHTML = '';
+        const newElement = document.createElement('p');
+        newElement.innerHTML= `"${randomQuote.text}" - ${randomQuote.category}`;
+        quoteDisplay.appendChild(newElement);
 
+    } else{
+        quoteDisplay.innerHTML = '<p> No quotes availlable for the selected category.<p>'
+    }
+}
+// Populate categories dynamically
+function populateCategories(){
+    // get unique categories from the quotes
+    const categories = [...new Set(quoteVariable.map(quote=>quote.category))];
+    // populate the category filter dropdown
+    categoryFilter.innerHTML = '<option value="all">All Categories</option>';
+    categories.forEach(category=>{
+        const option = document.createElement('option');
+        option.value = category;
+        option.textContent = category;
+        categoryFilter.appendChild(option);
+    });
+}
+// implement the filter quote function
+function filterQuotes(){
+    const selectedCategory = categoryFilter.value;
+    // save selected category to local storage
+    localStorage.setItem('selectedCategory', selectedCategory);
+    // filter quotes based on selected category
+    if(selectedCategory==='all'){
+        return quoteVariable;
+    } else{
+        return quoteVariable.filter(quote=>quote.category===selectedCategory)
+    }
 }
 // Implement createAddQuoteForm function
 function createAddQuoteForm(){
@@ -44,6 +81,8 @@ function addQuote(){
     
     // save quotes to local storage
     saveQuotes()
+    // update categories dynamically
+    populateCategories();
     // display the newly added quote
     showRandomQuote();
     addQuoteForm.style.display = 'none';
@@ -71,6 +110,9 @@ function importFromJsonFile(event){
         quoteVariable.push(...importedQuotes);
         saveQuotes();
         alert('Quotes imported successfully!');
+        // update categories dynamically after import
+        populateCategories();
+        showRandomQuote();
     };
     fileReader.readAsText(event.target.files[0]);
 }
@@ -81,6 +123,7 @@ addQuoteForm.addEventListener('submit', function(event){
     addQuote();
 });
 importFile.addEventListener('change',importFromJsonFile);
-// show intial quote
+categoryFilter.addEventListener('change', showRandomQuote);
+// show intial quote and populate categories on page load
+populateCategories();
 showRandomQuote();
-

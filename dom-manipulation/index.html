@@ -15,6 +15,10 @@
             <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
             <button onclick="addQuote()">Add Quote</button>
             <button onclick="exportJson()">Export Quotes</button>
+            <select id="categoryFilter" onchange="filterQuotes()">
+                
+                <!--Dynamically populated categories-->
+            </select>
         </div>
         <script src="script.js"></script>
     </body>
