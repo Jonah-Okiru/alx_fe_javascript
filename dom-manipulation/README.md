@@ -1,5 +1,5 @@
 # DOM Manipulation, Web Storage, and Working with JSON Data
-This project helps you develop a dynamic web application using advanced DOM manipulation techniques, web storage, and JSON data handling. You'll learn to:
+This project helps you develop a dynamic web application using advanced DOM manipulation techniques, web storage, and JSON data handling. Skills gained include:
 - Create and manipulate dynamic content using JavaScript.
 - Persist data across sessions using local and session storage.
 - Import and export JSON data to manage application state.
